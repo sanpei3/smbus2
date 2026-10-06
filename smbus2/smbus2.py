@@ -204,6 +204,8 @@ class i2c_msg(Structure):
         :rtype: :py:class:`i2c_msg`
         """
         arr = create_string_buffer(length)
+        if SMBus.system == 'FreeBSD':
+            address = address << 1 | I2C_M_RD
         return i2c_msg(
             addr=address, flags=I2C_M_RD, len=length,
             buf=arr)
@@ -229,6 +231,8 @@ class i2c_msg(Structure):
             if type(buf) is not str:
                 buf = ''.join([chr(x) for x in buf])
         arr = create_string_buffer(buf, len(buf))
+        if SMBus.system == 'FreeBSD':
+            address = address << 1
         return i2c_msg(
             addr=address, flags=0, len=len(arr),
             buf=arr)
